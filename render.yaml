@@ -1,9 +1,20 @@
 services:
   - type: web
-    name: shiny-scheduler-app
-    env: docker
-    repo: https://github.com/mertbkatal/productionschedheuristicoptimizerTCI
-    branch: main
-    dockerfilePath: ./Dockerfile
-    plan: free
-    autoDeploy: true
+    name: production-scheduler-tci
+    runtime: shiny
+    env: r
+    rVersion: '4.3.1'
+    buildCommand: |
+      Rscript install_packages.R
+      R -e 'install.packages("shiny")'
+    startCommand: R -e 'shiny::runApp("app.R", port = $PORT, host = "0.0.0.0")'
+    healthCheckPath: /
+    healthCheckTimeout: 180
+    resources:
+      cpu: 1
+      memory: 1GB
+    envVars:
+      - key: unlock_date
+        value: "2026-04-25"
+      - key: correct_password
+        value: "1020304050"
