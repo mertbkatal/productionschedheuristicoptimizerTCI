@@ -66,4 +66,10 @@ ui <- fluidPage(
 # [Include all your server logic here - identical to your existing server code]
 # [The server function remains exactly the same as in your SchedOptWP_Heur_R3.R file]
 
-shinyApp(ui, server)
+tryCatch({
+  shinyApp(ui, server)
+}, error = function(e) {
+  cat("🚨 Startup Error:\n")
+  print(e)
+  stop(e)
+})
