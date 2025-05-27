@@ -1,6 +1,6 @@
 FROM rocker/shiny:latest
 
-# Install system libraries needed by some R packages
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     libcurl4-openssl-dev \
     libssl-dev \
@@ -12,17 +12,17 @@ RUN apt-get update && apt-get install -y \
     libjpeg-dev \
     && apt-get clean
 
-# Install R packages
-RUN R -e "install.packages(c('shiny', 'shinyjs', 'openxlsx', 'plotly', 'DT', 'readxl', 'dplyr', 'parallel'), repos='https://cloud.r-project.org')"
+# Install R packages needed for the app
+RUN R -e "install.packages(c('shiny', 'shinyjs', 'openxlsx', 'plotly', 'DT', 'readxl', 'dplyr', 'ggplot2'), repos='https://cloud.r-project.org')"
 
-# Copy the app to the container
+# Copy app files to the container
 COPY . /srv/shiny-server/
 
-# Set permissions
+# Set correct permissions
 RUN chown -R shiny:shiny /srv/shiny-server
 
-# Expose port
+# Expose default shiny port
 EXPOSE 3838
 
-# Start the Shiny app
+# Run the app
 CMD ["/usr/bin/shiny-server"]
